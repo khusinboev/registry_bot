@@ -1,0 +1,56 @@
+# Environment files (contains secrets: BOT_TOKEN, etc.)
+.env
+.env.local
+.env.*.local
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Project runtime data
+registry.db
+*.sqlite
+*.sqlite3
+
+# Browser profiles and chromedriver
+browser_profile*/
+chromedriver
+chromedriver.exe
+
+# Debug artifacts and logs
+debug_artifacts/
+*.log
+*.tmp
+
+# Python packaging
+pip-log.txt
+pip-delete-this-directory.txt
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
