@@ -423,34 +423,41 @@ def parse_rows(driver):
 def get_total_pages_from_current(driver):
     try:
         WebDriverWait(driver, 20).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, "[class*='Pagination']"))
+            EC.presence_of_element_located((By.CSS_SELECTOR, "[class*='Pagination_wrapper']"))
         )
         time.sleep(2.0)
     except Exception:
         pass
 
+    # 1. ul.Pagination_wrapper matnidan oxirgi raqamni ol
     try:
-        btns = driver.find_elements(
-            By.CSS_SELECTOR,
-            "button.Pagination_page__YrHMb, [class*='Pagination'] button, "
-            "[class*='pagination'] button",
-        )
-        nums = []
-        for btn in btns:
-            t = (btn.text or "").strip()
-            a = (btn.get_attribute("aria-label") or "").strip()
-            if t.isdigit():
-                nums.append(int(t))
-            else:
-                m = re.search(r"Page\s+(\d+)", a, re.IGNORECASE)
-                if m:
-                    nums.append(int(m.group(1)))
-        print(f"  Pagination: {sorted(set(nums))}")
+        ul = driver.find_element(By.CSS_SELECTOR, "[class*='Pagination_wrapper']")
+        text = ul.text.strip()
+        # Matn: "1\n2\n3\n4\n5\n6\n...\n601"
+        nums = [int(x) for x in text.split() if x.isdigit()]
         if nums:
-            return max(nums)
+            total = max(nums)
+            print(f"  Pagination (ul text): {total}")
+            return total
     except Exception:
         pass
 
+    # 2. li elementlaridan raqam ol
+    try:
+        items = driver.find_elements(By.CSS_SELECTOR, "[class*='Pagination_item'] a, [class*='Pagination_item']")
+        nums = []
+        for el in items:
+            t = (el.text or "").strip()
+            if t.isdigit():
+                nums.append(int(t))
+        if nums:
+            total = max(nums)
+            print(f"  Pagination (li items): {total}")
+            return total
+    except Exception:
+        pass
+
+    # 3. HTML dan regex
     try:
         html = driver.page_source
         candidates = []
